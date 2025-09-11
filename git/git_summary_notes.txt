@@ -1,0 +1,94 @@
+КОНСПЕКТ: GIT. ВВЕДЕНИЕ (ПОЛНЫЙ)
+
+=== УСТАНОВКА И НАСТРОЙКА ===
+Windows: https://git-scm.com/download/win (Git Bash)
+Linux: sudo apt install git
+macOS: brew install git или с официального сайта
+
+GUI инструменты: GitKraken (https://www.gitkraken.com/download)
+
+Первичная настройка:
+git config --global user.name "Имя"
+git config --global user.email "email@example.com"
+
+=== ПОЛЕЗНЫЕ РЕСУРСЫ ===
+Документация (RU): https://git-scm.com/book/ru/v2
+Справочник (EN): https://git-scm.com/docs
+Шпаргалка (RU): https://github.github.com/training-kit/downloads/ru/github-git-cheat-sheet/
+
+=== СОЗДАНИЕ РЕПОЗИТОРИЯ ===
+Локальный:
+mkdir project && cd project
+git init
+git add .
+git commit -m "Initial commit"
+
+Связь с удалённым:
+git remote add origin URL
+git push -u origin main
+
+=== КЛЮЧЕВЫЕ ПОНЯТИЯ ===
+• Система контроля версий (VCS) - ПО для сохранения всех версий файлов
+• Репозиторий - хранилище кода с отслеживанием изменений
+• Ветвь (branch) - отдельная цепочка изменений
+• Master branch - главная ветка
+• Коммит - зафиксированная точка изменений
+• Remote server - удалённый сервер с репозиторием
+• Merge - слияние веток
+• Tag - ссылка на определённый коммит
+
+=== ОСНОВНЫЕ КОМАНДЫ GIT ===
+git pull - забрать изменения с сервера
+git push - отправить изменения на сервер
+git branch - показать ветки
+git merge <branch> - влить ветку в текущую
+git add - добавить файлы в индекс
+git commit - зафиксировать изменения
+git stash - сохранить изменения без коммита
+
+=== СПЕЦИАЛЬНЫЕ ФАЙЛЫ ===
+.gitignore - игнорировать файлы при коммитах
+.gitkeep - сохранить пустые папки в репозитории
+
+=== РАБОТА С ИНДЕКСОМ ===
+git add filename - добавить файл
+git rm --cached filename - убрать из индекса
+git status - проверить статус
+git diff --cached - разница между индексом и коммитом
+
+=== ЭТАПЫ КОММИТА ===
+1. Добавить файлы в локальный репозиторий (staging)
+2. Залить изменения на удалённый сервер (push)
+
+=== GITFLOW СТРАТЕГИЯ ===
+1. Master - рабочий код
+2. Feature-ветки - новый функционал (из master → в master)
+3. Release-ветки - подготовка релиза
+4. Hotfix-ветки - срочные исправления (из release → в release → в master)
+5. Dev-ветка (опционально) - сборка разработки
+
+=== ПЛАТФОРМЫ ===
+GitHub, GitLab, Bitbucket, Gitea, Azure Repos
+
+Функции:
+- Хостинг кода
+- Issue tracking
+- Pull/Merge requests
+- Wiki
+- CI/CD pipeline
+
+=== ПРЕИМУЩЕСТВА VCS ===
+• Ускоряет командную работу
+• Снижает ошибки
+• Отслеживание изменений
+• Возможность отката
+• Параллельная разработка
+
+=== ДО VCS ===
+Проблемы:
+- Архивы кодов
+- Ручная передача файлов
+- Версионирование через имена файлов
+- Сложная итоговая сборка
+- Неизвестность о работе коллег
+- Несовместимость кода

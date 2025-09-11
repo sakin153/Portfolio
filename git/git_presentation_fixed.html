@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Git. Введение - Интерактивная презентация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        .reveal {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 36px !important;
+        }
+        
+        .reveal .slides {
+            text-align: left !important;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        
+        .reveal .slides > section {
+            padding: 30px !important;
+            height: 100vh !important;
+            width: 100vw !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: flex-start !important;
+            overflow: auto !important;
+        }
+        
+        .reveal h1, .reveal h2, .reveal h3 {
+            color: #61dafb !important;
+            margin-bottom: 30px !important;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5) !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .reveal h1 { 
+            font-size: 2.5em !important; 
+            background: linear-gradient(45deg, #61dafb, #21a9dc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .reveal h2 { 
+            font-size: 1.8em !important; 
+            border-bottom: 2px solid #61dafb;
+            padding-bottom: 10px;
+        }
+        
+        .reveal p, .reveal li {
+            color: #e2e8f0 !important;
+            line-height: 1.6 !important;
+            margin-bottom: 15px !important;
+            font-size: 0.9em !important;
+        }
+        
+        .reveal strong {
+            color: #ffd700 !important;
+        }
+        
+        .reveal code {
+            background: #2d3748 !important;
+            color: #68d391 !important;
+            padding: 5px 8px !important;
+            border-radius: 4px !important;
+        }
+        
+        .reveal .progress {
+            height: 6px !important;
+            background: linear-gradient(90deg, #61dafb, #21a9dc) !important;
+        }
+        
+        .feature-list {
+            list-style: none !important;
+            padding: 0 !important;
+            flex-grow: 1 !important;
+            overflow-y: auto !important;
+        }
+        
+        .feature-list li {
+            background: rgba(97, 218, 251, 0.1) !important;
+            margin: 12px 0 !important;
+            padding: 15px !important;
+            border-left: 4px solid #61dafb !important;
+            border-radius: 0 8px 8px 0 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        .feature-list li:hover {
+            background: rgba(97, 218, 251, 0.2) !important;
+            transform: translateX(10px) !important;
+        }
+        
+        .code-block {
+            background: #1a202c !important;
+            border: 1px solid #4a5568 !important;
+            border-radius: 8px !important;
+            padding: 20px !important;
+            font-family: 'Courier New', monospace !important;
+            margin: 15px 0 !important;
+            overflow-x: auto !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .git-workflow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(45, 55, 72, 0.3);
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        
+        .git-step {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            border-radius: 10px;
+            border: 2px solid #61dafb;
+            min-width: 150px;
+            position: relative;
+        }
+        
+        .git-arrow {
+            font-size: 2em;
+            color: #61dafb;
+            position: relative;
+        }
+        
+        .git-arrow::after {
+            content: '→';
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        .installation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        
+        .install-card {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid #a0aec0;
+            transition: transform 0.3s ease;
+        }
+        
+        .install-card:hover {
+            transform: translateY(-5px);
+            border-color: #61dafb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Титульный слайд -->
+            <section data-background-gradient="linear-gradient(135deg, #667eea, #764ba2)">
+                <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                    <h1><i class="fab fa-git-alt"></i> Git. Введение</h1>
+                    <p style="font-size: 1.2em; color: #f7fafc; margin: 30px 0;">
+                        Система контроля версий для современной разработки
+                    </p>
+                    <div style="margin-top: 40px;">
+                        <i class="fas fa-code" style="font-size: 3em; color: #61dafb; margin: 0 20px;"></i>
+                        <i class="fas fa-users" style="font-size: 3em; color: #48bb78; margin: 0 20px;"></i>
+                        <i class="fas fa-rocket" style="font-size: 3em; color: #ed8936; margin: 0 20px;"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Что такое система контроля версий -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-question-circle" style="color: #61dafb;"></i> Что такое система контроля версий?</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Система контроля версий</strong> — это система, регистрирующая изменения в одном или нескольких файлах с тем, чтобы в дальнейшем была возможность вернуться к определённым старым версиям этих файлов</li>
+                    
+                    <li><strong>Основные возможности:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Возврат отдельных файлов к состоянию на определённый момент времени</li>
+                            <li>Возврат всего проекта к состоянию на определённый момент времени</li>
+                            <li>Сравнение изменений с течением времени</li>
+                            <li>Просмотр кто последний модифицировал что-то</li>
+                            <li>Восстановление файлов</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Зачем нужно знать системы контроля версий -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <div style="display: flex; align-items: flex-start; height: 85%; gap: 30px;">
+                    <div style="flex: 1;">
+                        <h2><i class="fas fa-lightbulb" style="color: #ffa500;"></i> Зачем нужно знать системы контроля версий?</h2>
+                        
+                        <ul class="feature-list" style="margin: 25px 0;">
+                            <li style="margin: 15px 0; font-size: 0.95em; line-height: 1.4;">
+                                <strong style="color: #61dafb;">Обеспечивают совместную работу</strong> над проектом — несколько разработчиков могут вносить изменения параллельно
+                            </li>
+                            
+                            <li style="margin: 15px 0; font-size: 0.95em; line-height: 1.4;">
+                                <strong style="color: #48bb78;">Позволяют хранить историю изменений</strong>, возвращаться к предыдущим версиям
+                            </li>
+                            
+                            <li style="margin: 15px 0; font-size: 0.95em; line-height: 1.4;">
+                                <strong style="color: #ed8936;">Упрощают интеграцию кода</strong> через удалённый репозиторий
+                            </li>
+                            
+                            <li style="margin: 15px 0; font-size: 0.95em; line-height: 1.4;">
+                                <strong style="color: #9f7aea;">Являются основой процессов CI/CD</strong>: автоматические тесты, проверки и сборка на каждый коммит
+                            </li>
+                            
+                            <li style="margin: 15px 0; font-size: 0.95em; line-height: 1.4;">
+                                <strong style="color: #38b2ac;">Повышают качество и надёжность</strong> разработки
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div style="flex: 0 0 35%; text-align: center; margin-top: 50px;">
+                        <div style="background: linear-gradient(135deg, #4a5568, #2d3748); padding: 15px; border-radius: 15px; border: 2px solid #a0aec0;">
+                            <!-- Мем с задумчивым человечком -->
+                            <div style="width: 200px; height: 180px; background: #f7fafc; border-radius: 10px; margin: 0 auto; position: relative; display: flex; align-items: center; justify-content: center;">
+                                <div style="text-align: center;">
+                                    <!-- Голова -->
+                                    <div style="width: 60px; height: 60px; border: 3px solid #2d3748; border-radius: 50%; background: #f7fafc; margin: 0 auto 10px; position: relative;">
+                                        <!-- Глаза -->
+                                        <div style="position: absolute; left: 15px; top: 20px; width: 4px; height: 8px; background: #2d3748;"></div>
+                                        <div style="position: absolute; right: 15px; top: 20px; width: 4px; height: 8px; background: #2d3748;"></div>
+                                        <!-- Рот задумчивый -->
+                                        <div style="position: absolute; left: 50%; top: 35px; transform: translateX(-50%); width: 8px; height: 4px; border: 2px solid #2d3748; border-radius: 0 0 8px 8px; border-top: none;"></div>
+                                    </div>
+                                    
+                                    <!-- Рука к подбородку -->
+                                    <div style="position: relative; margin-top: -10px;">
+                                        <!-- Тело -->
+                                        <div style="width: 40px; height: 50px; background: #f7fafc; margin: 0 auto; border: 3px solid #2d3748; border-radius: 0 0 20px 20px;"></div>
+                                        <!-- Рука -->
+                                        <div style="position: absolute; right: 45px; top: 10px; width: 30px; height: 3px; background: #2d3748; transform: rotate(-30deg);"></div>
+                                        <div style="position: absolute; right: 25px; top: 0px; width: 3px; height: 20px; background: #2d3748;"></div>
+                                    </div>
+                                    
+                                    <!-- Чашка кофе в другой руке -->
+                                    <div style="position: absolute; left: 20px; bottom: 30px;">
+                                        <div style="width: 12px; height: 16px; border: 2px solid #2d3748; border-radius: 0 0 6px 6px; background: #8b5a2b;"></div>
+                                        <div style="position: absolute; right: -4px; top: 4px; width: 6px; height: 8px; border: 2px solid #2d3748; border-left: none; border-radius: 0 8px 8px 0;"></div>
+                                        <!-- Пар -->
+                                        <div style="position: absolute; left: 2px; top: -8px; color: #a0aec0; font-size: 12px;">≈ ≈</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p style="color: #a0aec0; font-size: 0.85em; margin-top: 10px; font-style: italic;">
+                                "Хм, а действительно нужно изучать Git..."
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Локальные системы контроля версий -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-desktop" style="color: #68d391;"></i> Локальные системы контроля версий</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Простейший метод</strong> — копирование файлов в другую директорию (возможно, датированную)</li>
+                    
+                    <li><strong>Проблемы такого подхода:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Легко забыть в какой директории вы находитесь</li>
+                            <li>Случайная запись не в тот файл</li>
+                            <li>Случайное копирование не тех файлов</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Локальные VCS:</strong> простая база данных, которая ведёт учёт всех изменений в файлах</li>
+                    
+                    <li><strong>Популярная система:</strong> RCS (Revision Control System) — хранит на диске наборы патчей (различий между файлами) в специальном формате</li>
+                </ul>
+            </section>
+
+            <!-- Централизованные системы контроля версий -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-server" style="color: #4fb3d9;"></i> Централизованные системы контроля версий</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Проблема:</strong> необходимость совместной работы с разработчиками на других системах</li>
+                    
+                    <li><strong>Решение:</strong> Централизованные системы контроля версий (CVS, Subversion, Perforce)
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Единый сервер с файлами всех версий</li>
+                            <li>Клиенты извлекают файлы из центрального хранилища</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Преимущества:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Каждый знает что делают остальные участники проекта</li>
+                            <li>Администраторы имеют полный контроль</li>
+                            <li>Легче администрировать CVCS чем локальные базы</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Недостатки:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Единая точка отказа</li>
+                            <li>При недоступности сервера никто не может сохранять изменения</li>
+                            <li>Повреждение центральной базы = потеря всей истории проекта</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Распределённые системы контроля версий -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-network-wired" style="color: #f093fb;"></i> Распределённые системы контроля версий</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Принцип:</strong> клиенты не просто извлекают снимок последних версий файлов — они полностью копируют весь репозиторий</li>
+                    
+                    <li><strong>Преимущества:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>При отказе любого сервера любой клиентский репозиторий может быть скопирован обратно на сервер</li>
+                            <li>Каждое извлечение данных — полное резервное копирование всех данных</li>
+                            <li>Возможность работать с несколькими удалёнными репозиториями</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Примеры DVCS:</strong> Git, Mercurial, Bazaar, Darcs</li>
+                    
+                    <li><strong>Модели совместной работы:</strong> можно настроить несколько типов рабочих процессов, невозможных в централизованных системах</li>
+                </ul>
+            </section>
+
+            <!-- Краткая история Git -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-history" style="color: #ffd700;"></i> Краткая история Git</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>1991-2002:</strong> Ядро Linux разрабатывалось через передачу патчей и архивных файлов</li>
+                    
+                    <li><strong>2002:</strong> Проект ядра Linux начал использовать проприетарную DVCS BitKeeper</li>
+                    
+                    <li><strong>2005:</strong> 
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Отношения между сообществом разработчиков ядра Linux и компанией BitKeeper испортились</li>
+                            <li>Статус бесплатного использования инструмента был отозван</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Линус Торвальдс создал Git</strong> со следующими целями:
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Скорость</li>
+                            <li>Простая архитектура</li>
+                            <li>Сильная поддержка нелинейной разработки (тысячи параллельных веток)</li>
+                            <li>Полная распределённость</li>
+                            <li>Способность эффективно управлять большими проектами (скорость и размер данных)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Основы Git -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fab fa-git-alt" style="color: #f1502f;"></i> Основы Git</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Снимки, а не различия:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Другие системы хранят информацию как список изменений файлов</li>
+                            <li>Git хранит данные как снимки миниатюрной файловой системы</li>
+                            <li>При каждом коммите Git сохраняет снимок всех файлов</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Почти все операции локальны:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>История проекта полностью доступна на локальном диске</li>
+                            <li>Большинство операций мгновенные</li>
+                            <li>Возможность работать офлайн</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Целостность:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>Контрольные суммы SHA-1</li>
+                            <li>Невозможность незаметного повреждения файла</li>
+                        </ul>
+                    </li>
+                    
+                    <li><strong>Git обычно только добавляет данные</strong> — сложно заставить систему удалить данные</li>
+                </ul>
+            </section>
+
+            <!-- Три состояния -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-layer-group" style="color: #ff6b6b;"></i> Три состояния файлов в Git</h2>
+                
+                <div class="git-workflow">
+                    <div class="git-step">
+                        <i class="fas fa-edit" style="font-size: 2em; color: #ed8936; margin-bottom: 10px;"></i>
+                        <h3 style="color: #ed8936; font-size: 1.2em; margin: 10px 0;">Modified</h3>
+                        <p style="font-size: 0.9em;">Файл изменён, но ещё не зафиксирован</p>
+                    </div>
+                    
+                    <div class="git-arrow"></div>
+                    
+                    <div class="git-step">
+                        <i class="fas fa-plus-circle" style="font-size: 2em; color: #48bb78; margin-bottom: 10px;"></i>
+                        <h3 style="color: #48bb78; font-size: 1.2em; margin: 10px 0;">Staged</h3>
+                        <p style="font-size: 0.9em;">Изменённый файл отмечен для включения в следующий коммит</p>
+                    </div>
+                    
+                    <div class="git-arrow"></div>
+                    
+                    <div class="git-step">
+                        <i class="fas fa-check-circle" style="font-size: 2em; color: #61dafb; margin-bottom: 10px;"></i>
+                        <h3 style="color: #61dafb; font-size: 1.2em; margin: 10px 0;">Committed</h3>
+                        <p style="font-size: 0.9em;">Данные безопасно сохранены в локальной базе</p>
+                    </div>
+                </div>
+                
+                <ul class="feature-list" style="margin-top: 30px;">
+                    <li><strong>Рабочая директория</strong> — извлечённая из базы конкретная версия проекта</li>
+                    <li><strong>Область индексирования</strong> — файл с информацией о том, что войдёт в следующий коммит</li>
+                    <li><strong>Директория Git</strong> — место хранения метаданных и базы данных объектов</li>
+                </ul>
+            </section>
+
+            <!-- Установка Git -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-download" style="color: #4ecdc4;"></i> Установка Git</h2>
+                
+                <div class="installation-grid">
+                    <div class="install-card">
+                        <h3><i class="fab fa-linux" style="color: #ffd700;"></i> Linux</h3>
+                        <div class="code-block">
+                            <strong>Debian/Ubuntu:</strong><br>
+                            $ sudo apt install git-all<br><br>
+                            <strong>Fedora:</strong><br>
+                            $ sudo dnf install git-all
+                        </div>
+                    </div>
+                    
+                    <div class="install-card">
+                        <h3><i class="fab fa-apple" style="color: #a0aec0;"></i> macOS</h3>
+                        <div class="code-block">
+                            <strong>Homebrew:</strong><br>
+                            $ brew install git<br><br>
+                            <strong>Xcode:</strong><br>
+                            $ git --version<br>
+                            (автоматическая установка)
+                        </div>
+                    </div>
+                    
+                    <div class="install-card">
+                        <h3><i class="fab fa-windows" style="color: #61dafb;"></i> Windows</h3>
+                        <div class="code-block">
+                            <strong>Официальный сайт:</strong><br>
+                            https://git-scm.com/download/win<br><br>
+                            <strong>Chocolatey:</strong><br>
+                            choco install git
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Первоначальная настройка -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-cog" style="color: #9f7aea;"></i> Первоначальная настройка Git</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Настройка имени пользователя:</strong>
+                        <div class="code-block">$ git config --global user.name "John Doe"</div>
+                    </li>
+                    
+                    <li><strong>Настройка email:</strong>
+                        <div class="code-block">$ git config --global user.email johndoe@example.com</div>
+                    </li>
+                    
+                    <li><strong>Настройка текстового редактора:</strong>
+                        <div class="code-block">$ git config --global core.editor nano</div>
+                    </li>
+                    
+                    <li><strong>Проверка настроек:</strong>
+                        <div class="code-block">$ git config --list</div>
+                    </li>
+                    
+                    <li><strong>Получение справки:</strong>
+                        <div class="code-block">$ git help config<br>$ git config --help<br>$ man git-config</div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Получение справки -->
+            <section data-background-gradient="linear-gradient(135deg, #2d3748, #4a5568)">
+                <h2><i class="fas fa-question" style="color: #38b2ac;"></i> Получение справки</h2>
+                
+                <ul class="feature-list">
+                    <li><strong>Три способа получить справку по любой команде Git:</strong>
+                        <div class="code-block">
+                            $ git help &lt;команда&gt;<br>
+                            $ git &lt;команда&gt; --help<br>
+                            $ man git-&lt;команда&gt;
+                        </div>
+                    </li>
+                    
+                    <li><strong>Примеры:</strong>
+                        <div class="code-block">
+                            $ git help config<br>
+                            $ git add --help<br>
+                            $ man git-commit
+                        </div>
+                    </li>
+                    
+                    <li><strong>Краткая справка (только опции):</strong>
+                        <div class="code-block">$ git add -h</div>
+                    </li>
+                    
+                    <li><strong>Онлайн ресурсы:</strong>
+                        <ul style="margin-top: 10px; margin-left: 20px;">
+                            <li>https://git-scm.com/docs</li>
+                            <li>https://learngitbranching.js.org/</li>
+                            <li>https://training.github.com/</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Заключение -->
+            <section data-background-gradient="linear-gradient(135deg, #667eea, #764ba2)">
+                <div style="text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: center;">
+                    <h1><i class="fas fa-graduation-cap"></i> Заключение</h1>
+                    
+                    <div class="git-workflow" style="margin: 40px 0;">
+                        <div class="git-step">
+                            <i class="fas fa-download" style="font-size: 2em; color: #4ecdc4;"></i>
+                            <p>Установите Git</p>
+                        </div>
+                        
+                        <div class="git-arrow"></div>
+                        
+                        <div class="git-step">
+                            <i class="fas fa-cog" style="font-size: 2em; color: #9f7aea;"></i>
+                            <p>Настройте конфигурацию</p>
+                        </div>
+                        
+                        <div class="git-arrow"></div>
+                        
+                        <div class="git-step">
+                            <i class="fas fa-code" style="font-size: 2em; color: #61dafb;"></i>
+                            <p>Начните изучение команд</p>
+                        </div>
+                    </div>
+                    
+                    <p style="font-size: 1.3em; color: #f7fafc;">
+                        Git — мощный инструмент для современной разработки!
+                    </p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.js"></script>
+    
+    <script>
+        Reveal.initialize({
+            hash: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            controls: true,
+            progress: true,
+            center: false,
+            keyboard: true,
+            overview: true,
+            loop: false,
+            rtl: false,
+            navigationMode: 'default',
+            shuffle: false,
+            fragments: true,
+            fragmentInURL: false,
+            embedded: false,
+            help: true,
+            pause: true,
+            showNotes: false,
+            autoPlayMedia: null,
+            preloadIframes: null,
+            autoAnimate: true,
+            autoAnimateMatcher: null,
+            autoAnimateEasing: 'ease',
+            autoAnimateDuration: 1.0,
+            autoAnimateUnmatched: true,
+            autoAnimateStyles: [
+                'opacity',
+                'color',
+                'background-color',
+                'padding',
+                'font-size',
+                'line-height',
+                'letter-spacing',
+                'border-width',
+                'border-color',
+                'border-radius',
+                'outline',
+                'outline-offset'
+            ],
+            autoSlide: 0,
+            autoSlideStoppable: true,
+            autoSlideMethod: null,
+            defaultTiming: null,
+            mouseWheel: false,
+            previewLinks: false,
+            postMessage: true,
+            postMessageEvents: false,
+            focusBodyOnLoad: true,
+            transition: 'slide',
+            transitionSpeed: 'default',
+            backgroundTransition: 'fade',
+            viewDistance: 3,
+            mobileViewDistance: 2,
+            display: 'block',
+            hideInactiveCursor: true,
+            hideCursorTime: 5000
+        });
+    </script>
+</body>
+</html>

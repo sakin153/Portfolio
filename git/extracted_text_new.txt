@@ -1,0 +1,99 @@
+﻿=== СЛАЙД 1 ===
+
+Введение в GIt
+
+Установка и Настройка инструментов GITКомандная строка Создание первого репозиторияGitignore и gitkeep
+
+=== СЛАЙД 2 ===
+
+GIT (Распределительная система контроля версий)
+
+=== СЛАЙД 3 ===
+
+Документация
+
+1) Детально описанные возможности GIT на русском языкеhttps://git-scm.com/book/ru/v22) Справочник по командам на английскомhttps://git-scm.com/docs3) Шпаргалка (самая краткая)https://github.github.com/training-kit/downloads/ru/github-git-cheat-sheet/
+
+=== СЛАЙД 4 ===
+
+Инструменты GIT Для установки
+
+=== СЛАЙД 5 ===
+
+Установка На WINDOWs
+
+СсылкиGIT BASHhttps://git-scm.com/download/win2) GIT Kraken (GUI)https://www.gitkraken.com/download
+
+=== СЛАЙД 6 ===
+
+Установка на LINUX
+
+1) GIT (утилита)sudo apt install git2) Git Kraken (GUI)https://www.gitkraken.com/download
+
+=== СЛАЙД 7 ===
+
+Установка на MaC OS
+
+Смотрите видео об установке по ссылкеhttps://d2xzmw6cctk25h.cloudfront.net/record/53868/attachment/4b8ca2920c7b990110e62a60cfbfbb21.mp4
+
+=== СЛАЙД 8 ===
+
+Настройка GIT
+
+=== СЛАЙД 9 ===
+
+Что нужно уметь для работы с GIT
+
+=== СЛАЙД 10 ===
+
+Мини-задание
+
+=== СЛАЙД 11 ===
+
+Репозиторий
+
+=== СЛАЙД 12 ===
+
+Локальный репозиторий
+
+Командыmkdir test-repocd test-repogit initgit statusgit add FILE_NAME
+
+=== СЛАЙД 13 ===
+
+Удаленный репозиторий на GITHUB
+
+https://github.com/
+
+=== СЛАЙД 14 ===
+
+Настройка связи между репозиториями
+
+git remote add origin REPO_LINKgit remote -v
+
+=== СЛАЙД 15 ===
+
+Коммит этапы
+
+1) добавить файлы в локальный репозиторий2) залить изменения на удаленный
+
+=== СЛАЙД 16 ===
+
+Добавление файлов в локальный репозиторий
+
+Добавлениеgit add FILE_NAMEgit statusУдалениеgit rm --cached  FILE_NAME
+
+=== СЛАЙД 17 ===
+
+КОММИТ
+
+=== СЛАЙД 18 ===
+
+Системные файлы для GIT
+
+.gitkeep сохраняет пустые папки в репозиторий.gitignore игнорирует файлы при каждом новом коммите
+
+=== СЛАЙД 19 ===
+
+GIT PUSH
+
+
