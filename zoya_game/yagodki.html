@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Собери ягодки в корзинки</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      touch-action: manipulation;
+    }
+    body {
+      font-family: 'Comic Sans MS', 'Marker Felt', cursive, sans-serif;
+      background: linear-gradient(to bottom, #a2d9ff, #b0f2b4);
+      min-height: 100vh;
+      overflow: hidden;
+      padding: 10px;
+      text-align: center;
+    }
+    .header {
+      margin: 12px 0 8px;
+    }
+    .title {
+      font-size: 2.6rem;
+      color: #d32f2f;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.15);
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 1.4rem;
+      color: #1b5e20;
+      margin-bottom: 12px;
+      font-weight: bold;
+    }
+    .field {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 280px);
+      background: radial-gradient(circle at 30% 30%, #c8e6c9, #81c784);
+      border-radius: 16px;
+      margin: 0 auto 15px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+      border: 4px dashed #4caf50;
+    }
+    .berry {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+      background: radial-gradient(circle, #ffffff, #f8f8f8);
+      transition: transform 0.25s;
+      overflow: hidden;
+    }
+    .berry.red    { background: radial-gradient(circle, #ff6b6b, #ff3b3b); }
+    .berry.blue   { background: radial-gradient(circle, #6ab7ff, #2a7de1); }
+    .berry.yellow { background: radial-gradient(circle, #ffeb6b, #ffcc00); }
+    .berry.green  { background: radial-gradient(circle, #88e088, #4caf50); }
+    .berry.dragging {
+      z-index: 100;
+      cursor: grabbing;
+      transform: scale(1.15);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    }
+    .berry.success {
+      animation: successDrop 0.6s ease-out;
+    }
+    @keyframes successDrop {
+      0% { transform: scale(1.15) translateY(0); }
+      50% { transform: scale(0.9) translateY(-20px); }
+      100% { transform: scale(0); opacity: 0; }
+    }
+
+    .berry img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .baskets {
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .basket {
+      width: 220px;
+      height: 130px;
+      border-radius: 16px 16px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding: 12px 0 16px;
+      font-weight: bold;
+      color: white;
+      font-size: 1.45rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+      user-select: none;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+      border: 5px solid rgba(0,0,0,0.22);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .basket:hover {
+      transform: scale(1.04);
+    }
+    .basket::before {
+      content: "🧺";
+      font-size: 4.5rem;
+      position: absolute;
+      top: -32px;
+    }
+    .basket.red    { background: #e53935; }
+    .basket.blue   { background: #1e88e5; }
+    .basket.yellow { background: #fdd835; color: #333; }
+    .basket.green  { background: #43a047; }
+
+    .counter {
+      margin-top: 16px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #1b5e20;
+    }
+
+    .message {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255,255,255,0.94);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.6s;
+    }
+    .message.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .message h2 {
+      color: #d32f2f;
+      font-size: 3.2rem;
+      margin: 24px 0 14px;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .bear {
+      font-size: 6.5rem;
+      margin-bottom: 20px;
+      animation: bounce 1.2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-22px); }
+    }
+    .btn {
+      background: #43a047;
+      color: white;
+      border: none;
+      padding: 20px 52px;
+      font-size: 1.7rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: bold;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+      transition: all 0.2s;
+    }
+    .btn:hover { background: #388e3c; }
+    .btn:active { transform: scale(0.97) translateY(2px); }
+
+    /* Ghost-элемент для drag (визуальное следование) */
+    .drag-ghost {
+      position: absolute;
+      width: 140px;
+      height: 140px;
+      pointer-events: none;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+      opacity: 0.95;
+      transform: translate(-50%, -50%);
+      overflow: hidden;
+    }
+    
+    .drag-ghost img {
+      width: 90%;
+      height: 90%;
+      object-fit: contain;
+    }
+
+    @media (max-width: 600px) {
+      .title { font-size: 2.2rem; }
+      .subtitle { font-size: 1.25rem; }
+      .berry { width: 115px; height: 115px; }
+      .basket {
+        width: 160px;
+        height: 110px;
+        font-size: 1.3rem;
+        padding: 10px 0 14px;
+      }
+      .basket::before { font-size: 3.6rem; top: -28px; }
+      .baskets { gap: 10px; }
+      .counter { font-size: 1.45rem; }
+      .message h2 { font-size: 2.6rem; }
+      .bear { font-size: 5.5rem; }
+      .drag-ghost {
+        width: 115px;
+        height: 115px;
+      }
+      .berry img,
+      .drag-ghost img {
+        width: 90%;
+        height: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="title">Собери ягодки в корзинки!</div>
+  </div>
+
+  <div class="field" id="field"></div>
+
+  <div class="baskets">
+    <div class="basket red"    data-color="red">    Красная</div>
+    <div class="basket blue"   data-color="blue">   Синяя</div>
+    <div class="basket yellow" data-color="yellow"> Жёлтая</div>
+    <div class="basket green"  data-color="green">  Зелёная</div>
+  </div>
+
+  <div class="counter" id="counter">Ягодок собрано: <span id="count">0</span> из 12</div>
+
+  <div class="message" id="message">
+    <div class="bear">🐻</div>
+    <h2>Ура! Всё правильно!<br>Мишка благодарит тебя!</h2>
+    <button class="btn" id="restart">Собрать ещё раз</button>
+  </div>
+
+  <script>
+    class GentleSound {
+      constructor() {
+        this.ctx = null;
+        try {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+          console.warn("Web Audio не поддерживается — звуки отключены.");
+        }
+      }
+
+      playCorrect() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        [523, 784].forEach((freq, i) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now + i * 0.12);
+          osc.stop(now + 0.9 + i * 0.12);
+        });
+      }
+
+      playWrong() {
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.5);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+
+      unlock() {
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume().catch(() => {});
+        }
+      }
+    }
+
+    const sound = new GentleSound();
+
+    const berries = [
+      { color: 'red', name: 'Клубника', image: 'https://png.pngtree.com/png-clipart/20211219/original/pngtree-a-strawberry-free-png-and-psd-png-image_6965309.png' },
+      { color: 'red', name: 'Малина', image: 'https://static.vecteezy.com/system/resources/thumbnails/029/228/936/small/berry-transparent-background-png.png' },
+      { color: 'red', name: 'Вишня', image: 'https://png.pngtree.com/png-clipart/20230425/original/pngtree-cherry-fruit-green-transparent-png-image_9096472.png' },
+      { color: 'red', name: 'Красная смородина', image: 'https://pngicon.ru/file/uploads/krasnaja-smorodina.png' },
+      { color: 'blue', name: 'Черника', image: 'https://pngicon.ru/file/uploads/chernika.png' },
+      { color: 'blue', name: 'Голубика', image: 'https://png.pngtree.com/png-vector/20250311/ourmid/pngtree-blueberries-png-image_15758978.png' },
+      { color: 'blue', name: 'Ежевика', image: 'https://static.vecteezy.com/system/resources/thumbnails/012/596/116/small/blackberry-with-leaves-free-png.png' },
+      { color: 'blue', name: 'Синяя смородина', image: 'https://png.pngtree.com/png-clipart/20250705/original/pngtree-blackcurrant-isolated-on-a-transparent-background-png-image_21276160.png' },
+      { color: 'yellow', name: 'Жёлтая смородина', image: 'https://png.pngtree.com/png-vector/20250330/ourmid/pngtree-ripe-white-currant-fruit-front-view-png-image_15898992.png' },
+      { color: 'yellow', name: 'Крыжовник', image: 'https://static.vecteezy.com/system/resources/thumbnails/029/228/880/small/amla-transparent-background-free-png.png' },
+      { color: 'yellow', name: 'Облепиха', image: 'https://m.dom-eda.com/uploads/images/catalog/item/7108ff9b5b/aa2dafc0f1_500.png' },
+      { color: 'green', name: 'Киви', image: 'https://free-png.ru/wp-content/uploads/2020/10/01-fbaebbe3.png' },
+    ];
+
+    const field = document.getElementById('field');
+    const baskets = Array.from(document.querySelectorAll('.basket'));
+    const counter = document.getElementById('count');
+    const message = document.getElementById('message');
+    const restartBtn = document.getElementById('restart');
+
+    let collected = 0;
+    const total = berries.length;
+    let draggedElement = null;
+    let dragGhost = null;
+    let offsetX = 0, offsetY = 0;
+
+    function initGame() {
+      sound.unlock();
+      field.innerHTML = '';
+      collected = 0;
+      counter.textContent = collected;
+      message.classList.remove('show');
+
+      const shuffled = [...berries]
+        .map(item => ({ ...item, id: Math.random() }))
+        .sort(() => Math.random() - 0.5);
+
+      shuffled.forEach((berry, i) => {
+        const el = document.createElement('div');
+        el.className = `berry ${berry.color}`;
+        el.dataset.color = berry.color;
+        el.title = berry.name;
+        
+        const img = document.createElement('img');
+        img.src = berry.image;
+        img.alt = berry.name;
+        img.draggable = false;
+        el.appendChild(img);
+
+        let x, y, attempts = 0;
+        do {
+          const maxX = field.clientWidth - 140;
+          const maxY = field.clientHeight - 140;
+          x = Math.max(20, Math.min(maxX - 20, Math.random() * maxX));
+          y = Math.max(20, Math.min(maxY - 20, Math.random() * maxY));
+          attempts++;
+        } while (attempts < 50 && isTooClose(x, y, field));
+
+        el.style.left = `${x}px`;
+        el.style.top = `${y}px`;
+
+        el.draggable = true;
+        el.addEventListener('mousedown', handleMouseDown);
+        el.addEventListener('dragstart', handleDragStart);
+        el.addEventListener('dragend', handleDragEnd);
+        el.addEventListener('touchstart', handleTouchStart, { passive: false });
+
+        field.appendChild(el);
+      });
+    }
+
+    function isTooClose(x, y, container) {
+      const children = container.children;
+      for (let el of children) {
+        const rect = el.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        const elX = rect.left - containerRect.left;
+        const elY = rect.top - containerRect.top;
+        const dx = x - elX;
+        const dy = y - elY;
+        if (Math.sqrt(dx*dx + dy*dy) < 115) return true;
+      }
+      return false;
+    }
+
+    // ======== 🖱️ DRAG & DROP (мышь) ========
+    function handleMouseDown(e) {
+      const rect = e.target.closest('.berry').getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+    }
+
+    function handleDragStart(e) {
+      sound.unlock();
+      draggedElement = e.target.closest('.berry');
+      if (!draggedElement) return;
+      
+      draggedElement.classList.add('dragging');
+
+      dragGhost = document.createElement('div');
+      dragGhost.className = `drag-ghost ${draggedElement.className}`;
+      
+      const ghostImg = document.createElement('img');
+      ghostImg.src = draggedElement.querySelector('img').src;
+      ghostImg.alt = draggedElement.title;
+      dragGhost.appendChild(ghostImg);
+      
+      document.body.appendChild(dragGhost);
+
+      e.dataTransfer.setDragImage(new Image(), 0, 0);
+
+      document.addEventListener('dragover', handleDragOver);
+      document.addEventListener('dragend', handleDragEndGlobal);
+    }
+
+    function handleDragOver(e) {
+      if (!dragGhost) return;
+      e.preventDefault();
+      dragGhost.style.left = `${e.clientX}px`;
+      dragGhost.style.top = `${e.clientY}px`;
+    }
+
+    function handleDragEndGlobal(e) {
+      cleanupDrag();
+    }
+
+    function handleDragEnd() {
+      cleanupDrag();
+    }
+
+    function cleanupDrag() {
+      if (dragGhost) {
+        document.body.removeChild(dragGhost);
+        dragGhost = null;
+      }
+      if (draggedElement) {
+        draggedElement.classList.remove('dragging');
+        draggedElement = null;
+      }
+      document.removeEventListener('dragover', handleDragOver);
+      document.removeEventListener('dragend', handleDragEndGlobal);
+    }
+
+    // ======== ✋ TOUCH (мобильные) ========
+    function handleTouchStart(e) {
+      sound.unlock();
+      const touch = e.touches[0];
+      draggedElement = e.target.closest('.berry');
+      if (!draggedElement) return;
+
+      const rect = draggedElement.getBoundingClientRect();
+      offsetX = touch.clientX - rect.left;
+      offsetY = touch.clientY - rect.top;
+
+      draggedElement.classList.add('dragging');
+
+      const moveHandler = (e) => {
+        e.preventDefault();
+        if (!draggedElement) return;
+        const touch = e.touches[0];
+        const x = touch.clientX - offsetX;
+        const y = touch.clientY - offsetY;
+        draggedElement.style.transform = `translate(${x}px, ${y}px)`;
+      };
+
+      const endHandler = (e) => {
+        if (!draggedElement) return;
+
+        const computedStyle = getComputedStyle(draggedElement);
+        const matrix = new DOMMatrixReadOnly(computedStyle.transform);
+        const finalX = matrix.m41;
+        const finalY = matrix.m42;
+        draggedElement.style.transform = '';
+
+        const rect = field.getBoundingClientRect();
+        const left = parseFloat(draggedElement.style.left) + finalX;
+        const top = parseFloat(draggedElement.style.top) + finalY;
+        draggedElement.style.left = `${left}px`;
+        draggedElement.style.top = `${top}px`;
+
+        checkDrop(draggedElement);
+        draggedElement.classList.remove('dragging');
+        draggedElement = null;
+
+        field.removeEventListener('touchmove', moveHandler);
+        ['touchend', 'touchcancel'].forEach(ev =>
+          field.removeEventListener(ev, endHandler)
+        );
+      };
+
+      field.addEventListener('touchmove', moveHandler, { passive: false });
+      ['touchend', 'touchcancel'].forEach(ev =>
+        field.addEventListener(ev, endHandler, { once: true })
+      );
+    }
+
+    // ======== 🧺 DROP ========
+    baskets.forEach(basket => {
+      basket.addEventListener('dragover', e => e.preventDefault());
+      basket.addEventListener('drop', e => {
+        e.preventDefault();
+        if (!draggedElement) return;
+        const targetColor = basket.dataset.color;
+        checkDrop(draggedElement, targetColor);
+        cleanupDrag();
+      });
+    });
+
+    function checkDrop(element, targetColor = null) {
+      if (!element) return;
+      const berryColor = element.dataset.color;
+      let correct = false;
+
+      if (targetColor) {
+        correct = berryColor === targetColor;
+      } else {
+        const berryRect = element.getBoundingClientRect();
+        baskets.forEach(basket => {
+          if (correct) return;
+          const basketRect = basket.getBoundingClientRect();
+          const dx = (berryRect.left + berryRect.width/2) - (basketRect.left + basketRect.width/2);
+          const dy = (berryRect.top + berryRect.height/2) - (basketRect.top + basketRect.height/2);
+          const distance = Math.sqrt(dx*dx + dy*dy);
+          if (distance < 115 && berryColor === basket.dataset.color) {
+            correct = true;
+          }
+        });
+      }
+
+      if (correct) {
+        sound.playCorrect();
+        element.classList.add('success');
+        setTimeout(() => {
+          element.remove();
+          collected++;
+          counter.textContent = collected;
+          if (collected >= total) {
+            setTimeout(() => message.classList.add('show'), 400);
+          }
+        }, 600);
+      } else {
+        sound.playWrong();
+        element.style.transition = 'transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1)';
+        element.style.transform = 'translate(0, 0)';
+        setTimeout(() => {
+          element.style.transition = '';
+        }, 450);
+      }
+    }
+
+    restartBtn.addEventListener('click', initGame);
+
+    window.addEventListener('load', () => {
+      document.body.addEventListener('pointerdown', () => sound.unlock(), { once: true });
+      setTimeout(initGame, 500);
+    });
+  </script>
+
+</body>
+</html>
